@@ -1,0 +1,34 @@
+version: '3.5'
+
+services:
+  consul-server:
+    image: consul:latest
+    command: ["agent", "-server", "-ui", "-bind=0.0.0.0", "-client=0.0.0.0", "-data-dir=/consul/data", "-config-dir=/etc/consul.d", "-bootstrap-expect=1" ]
+    volumes:
+    - ${PWD}/consul-server/consul-server.json:/etc/consul.d/consul-server.json
+    ports:
+    - "8500:8500" # Web UI
+
+  echo:
+    image: demo/echo-server
+    build:
+      context: ./echo-server
+    environment:
+      CONSUL_HTTP_TOKEN: randomagenttoken
+    volumes:
+    - ${PWD}/echo-server/service.json:/consul/myconfig/service.json
+    depends_on:
+    - consul-server
+
+  client:
+    image: demo/client
+    build:
+      context: ./client
+    environment:
+      CONSUL_HTTP_TOKEN: randomagenttoken
+    volumes:
+    - ${PWD}/client/service.json:/consul/myconfig/service.json
+    depends_on:
+    - consul-server
+    - echo
+

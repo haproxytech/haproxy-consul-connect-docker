@@ -1,0 +1,9 @@
+{
+  "service": {
+    "name": "echo-server",
+    "port": 8080,
+    "connect": {
+      "sidecar_service": {}
+    }
+  }
+}

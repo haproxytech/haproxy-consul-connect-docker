@@ -1,0 +1,18 @@
+{
+  "service": {
+    "name": "client",
+    "port": 80,
+    "connect": {
+      "sidecar_service": {
+        "proxy": {
+          "upstreams": [
+            {
+              "destination_name": "echo-server",
+              "local_bind_port": 8080
+            }
+          ]
+        }
+      }
+    }
+  }
+}
