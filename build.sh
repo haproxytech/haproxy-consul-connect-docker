@@ -33,6 +33,10 @@ if [ \( "x$1" = "xtest" \) -o \( "x$2" = "xtest" \) ]; then
     exit 0
 fi
 
+if [ "$PUSH" = "no" ]; then
+        exit 0
+fi
+
 if git tag --list | egrep -q "^$CONSUL_CONNECT_MINOR$" >/dev/null 2>&1; then
     git tag -d "$CONSUL_CONNECT_MINOR" || true
     git push origin ":$CONSUL_CONNECT_MINOR" || true
@@ -41,16 +45,3 @@ git commit -a -m "Automated commit triggered by $CONSUL_CONNECT_MINOR release(s)
 git tag "$CONSUL_CONNECT_MINOR"
 git push origin "$CONSUL_CONNECT_MINOR"
 
-if [ "$PUSH" = "no" ]; then
-        exit 0
-fi
-
-echo -e "# Supported tags and respective \`Dockerfile\` links\n" > README.md
-i=$(awk '/^ENV CONSUL_CONNECT_MINOR/ {print $NF}' Dockerfile| sort -n -r)
-final="-\t[\`$i\`, \`latest\`]($CONSUL_CONNECT_GITHUB_URL/$short/Dockerfile)"
-echo -e "$final" >> README.md
-echo >> README.md
-cat README_short.md >> README.md
-
-git commit -a -m "README regen triggered by $CONSUL_CONNECT_MINOR release" || true
-git push
