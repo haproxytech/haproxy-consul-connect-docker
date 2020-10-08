@@ -8,11 +8,11 @@ CONSUL_CONNECT_UPDATED=""
 echo "Building HAProxy $i + Consul Connect"
 
 DOCKERFILE="Dockerfile"
-CONSUL_CONNECT_MINOR_OLD=$(awk '/^ENV CONSUL_CONNECT_MINOR/ {print $NF}' "$DOCKERFILE")
+CONSUL_CONNECT_MINOR_OLD=$(awk -F= '/^ARG CONSUL_CONNECT_MINOR=/ {print $NF}' "$DOCKERFILE")
 
 ./update.sh
 
-CONSUL_CONNECT_MINOR=$(awk '/^ENV CONSUL_CONNECT_MINOR/ {print $NF}' "$DOCKERFILE")
+CONSUL_CONNECT_MINOR=$(awk -F= '/^ARG CONSUL_CONNECT_MINOR=/ {print $NF}' "$DOCKERFILE")
 
 if [ "x$1" != "xforce" ]; then
     if [ "$CONSUL_CONNECT_MINOR_OLD" = "$CONSUL_CONNECT_MINOR" ]; then

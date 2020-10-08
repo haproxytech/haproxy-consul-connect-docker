@@ -14,4 +14,4 @@ done
 echo "Connected."
 
 echo "Starting HAProxy Consul Connect"
-haproxy-connect -sidecar-for "$service_name"
+haproxy-connect -sidecar-for "$service_name" -dataplane /usr/local/bin/dataplaneapi -haproxy /usr/local/sbin/haproxy

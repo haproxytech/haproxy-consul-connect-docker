@@ -19,6 +19,6 @@ if [ -z "${CONSUL_CONNECT_MINOR}" ]; then
     exit 1
 fi
 
-sed -r -i -e "s!^(ENV CONSUL_CONNECT_URL) .*!\1 ${CONSUL_CONNECT_URL}!;
-            s!^(ENV CONSUL_CONNECT_MINOR) .*!\1 ${CONSUL_CONNECT_MINOR}!;" \
+sed -r -i -e "s!^(ARG CONSUL_CONNECT_URL=).*!\1${CONSUL_CONNECT_URL}!;
+            s!^(ARG CONSUL_CONNECT_MINOR=).*!\1${CONSUL_CONNECT_MINOR}!;" \
             "$DOCKERFILE"

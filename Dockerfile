@@ -1,14 +1,22 @@
-FROM consul:latest AS consul
+ARG CONSUL_MINOR=1.5.3
+
+FROM consul:${CONSUL_MINOR} AS consul
 FROM haproxytech/haproxy-alpine:2.1
 
 MAINTAINER Dinko Korunic <dkorunic@haproxy.com>
 
-ENV CONSUL_CONNECT_MINOR 0.1.9
-ENV CONSUL_CONNECT_URL https://github.com/haproxytech/haproxy-consul-connect/releases/download
+ARG CONSUL_CONNECT_MINOR=0.1.9
+ARG CONSUL_CONNECT_URL=https://github.com/haproxytech/haproxy-consul-connect/releases/download
 
-ENV DATAPLANE_MINOR v1.2.5
-ENV DATAPLANE_SHA256 0359966747490b55e6ea8c75a9b4969c707ce644dd8041ad8afb49882b97f3a1
-ENV DATAPLANE_URL https://github.com/haproxytech/dataplaneapi/releases/download
+ARG DATAPLANE_MINOR_CC=v1.2.5
+ARG DATAPLANE_SHA256_CC=0359966747490b55e6ea8c75a9b4969c707ce644dd8041ad8afb49882b97f3a1
+ARG DATAPLANE_URL_CC=https://github.com/haproxytech/dataplaneapi/releases/download
+
+ENV CONSUL_CONNECT_MINOR=${CONSUL_CONNECT_MINOR}
+ENV CONSUL_CONNECT_URL=${CONSUL_CONNECT_URL}
+ENV DATAPLANE_MINOR=${DATAPLANE_MINOR_CC}
+ENV DATAPLANE_SHA256=${DATAPLANE_SHA256_CC}
+ENV DATAPLANE_URL=${DATAPLANE_URL_CC}
 
 COPY --from=consul /bin/consul /bin/consul
 
@@ -21,8 +29,8 @@ RUN apk add --no-cache --virtual build-deps curl && \
     chmod +x /usr/local/bin/haproxy-connect && \
     ln -s /usr/local/bin/haproxy-connect /usr/bin/haproxy-connect && \
     rm -rf /tmp/consul_connect && \
-    curl -sfSL "$DATAPLANE_URL/$DATAPLANE_MINOR/dataplaneapi" -o dataplaneapi && \
-    echo "$DATAPLANE_SHA256 *dataplaneapi" | sha256sum -c - && \
+    curl -sfSL "${DATAPLANE_URL}/${DATAPLANE_MINOR}/dataplaneapi" -o dataplaneapi && \
+    echo "${DATAPLANE_SHA256} *dataplaneapi" | sha256sum -c - && \
     mv dataplaneapi /usr/local/bin/dataplaneapi && \
     chmod +x /usr/local/bin/dataplaneapi && \
     ln -sf /usr/local/bin/dataplaneapi /usr/bin/dataplaneapi && \
